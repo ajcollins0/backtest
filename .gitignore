@@ -1,3 +1,8 @@
+# stock data files
+dataset/
+.DS_Store
+results/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
