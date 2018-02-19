@@ -6,8 +6,9 @@ from stock import Day
 from pylab import date2num
 from datetime import datetime
 
-class DataQuery:
+class DataQueryDB:
 
+    # defin DB params
     def __init__(self):
         self.cur = None
         self.conn = None
@@ -24,7 +25,7 @@ class DataQuery:
             tickers.append(i[0].strip()[:-6])
         return tickers
 
-    def get_stock_data_db(self, tickers):
+    def get_stock_data(self, tickers):
         ret_val = {}
         for ticker in tickers:
             cmd = "SELECT * FROM %s" % (ticker + "_OHLCV")
@@ -37,11 +38,21 @@ class DataQuery:
             ret_val[ticker] = t
         return ret_val
 
-    def get_stock_data(self, path, tickers):
+    def close_db(self):
+        self.cur.close()
+        self.conn.close()
+
+class DataQuery:
+
+    # set where to pull data from
+    def __init__(self, path):
+        self.path = path
+
+    def get_stock_data(self, tickers):
         ret_val = {}
         for ticker in tickers:
             t = []
-            with open(path + ticker + '.txt', 'rb') as f:
+            with open(self.path + ticker + '.txt', 'rb') as f:
                 reader = csv.reader(f)
                 for row in reader:
                     if len(row) == 7:
@@ -50,7 +61,3 @@ class DataQuery:
                         t.append(Day(row[0],"0:0",row[1],row[2],row[3],row[4],row[5])) 
             ret_val[ticker] = t
             return ret_val
-
-    def close_db(self):
-        self.cur.close()
-        self.conn.close()
