@@ -1,11 +1,7 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from pylab import num2date, savefig
-from matplotlib.finance import candlestick2_ohlc, candlestick_ohlc, volume_overlay, quotes_historical_yahoo_ohlc
+from matplotlib.finance import candlestick2_ohlc, candlestick_ohlc, volume_overlay
 from matplotlib.transforms import Bbox
-import matplotlib.dates as mdates
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
-from pylab import num2date, date2num
 
 def get_data_arrays(data):
     # format data pieces:
