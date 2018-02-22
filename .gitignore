@@ -1,7 +1,8 @@
 # stock data files
 dataset/
 .DS_Store
-results/
+tests/
+*_test.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
