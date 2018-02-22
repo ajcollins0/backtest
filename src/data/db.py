@@ -60,4 +60,4 @@ class DataQuery:
                     elif len(row) == 6:
                         t.append(Day(row[0],"0:0",row[1],row[2],row[3],row[4],row[5])) 
             ret_val[ticker] = t
-            return ret_val
+        return ret_val
