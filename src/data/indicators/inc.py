@@ -79,6 +79,7 @@ def sma(data, N):
     closes = get_closes_array(data)
     cumsum = np.cumsum(np.insert(closes, 0, 0))
     smas = (cumsum[N:] - cumsum[:-N]) / float(N)
+    # pad inital sma range with 0's
     for i in range(len(closes) - len(smas)):
             smas = np.insert(smas,0,0)
     return smas
