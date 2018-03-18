@@ -4,8 +4,7 @@ from datetime import datetime
 class Day:
 
     def __init__(self, date, time, open, high, low, close, volume):
-        
-        datetime_object = datetime.strptime(date, "%m/%d/%Y")
+        datetime_object = datetime.strptime(date + " " + time, "%m/%d/%Y %H:%M")
         self.date = datetime_object 
         self.time = time   
         self.open = float(open)
