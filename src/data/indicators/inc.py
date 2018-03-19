@@ -84,11 +84,6 @@ def higher_high(idx, data):
         else:
             return False
 
-# def bar_is_not_doji(idx, data):
-    # per_full_bar = (data[idx].high - data[idx].low) / data[idx].high
-    # per__bar = (data[idx].high - data[idx].low) / data[idx].high
-
-
 def higher_low(idx, data):
     if idx - 1 < 0:
         return False
