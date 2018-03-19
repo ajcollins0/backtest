@@ -75,6 +75,29 @@ def get_closes_array(data):
         arr.append(i.close)
     return arr
 
+def higher_high(idx, data):
+    if idx - 1 < 0:
+        return False
+    else:
+        if data[idx].high > data[idx - 1].high:
+            return True
+        else:
+            return False
+
+# def bar_is_not_doji(idx, data):
+    # per_full_bar = (data[idx].high - data[idx].low) / data[idx].high
+    # per__bar = (data[idx].high - data[idx].low) / data[idx].high
+
+
+def higher_low(idx, data):
+    if idx - 1 < 0:
+        return False
+    else:
+        if data[idx].low > data[idx - 1].low:
+            return True
+        else:
+            return False
+
 def sma(data, N):
     closes = get_closes_array(data)
     cumsum = np.cumsum(np.insert(closes, 0, 0))
