@@ -2,7 +2,7 @@ import sqlite3
 import csv
 from stock import Day
 from pylab import date2num
-from datetime import datetime, time
+from datetime import datetime, time, date
 
 class DataQueryDB:
 
@@ -46,11 +46,17 @@ class DataQuery:
     def __init__(self, path):
         self.path = path
 
-    def get_stock_data(self, tickers, after_hours=False):
+    def get_stock_data(self, tickers, after_hours=False, start_date=None, end_date=None):
         
         start_time = time(9, 30)
         # the candle counts as 30 min, so we end our time at the last candle, starting at 3:30pm EST
         end_time = time(15, 30)
+
+        if start_date is None:
+            start_date=date(1990,1,1)
+
+        if end_date is None:
+            end_date=date(3000,1,1)
 
         ret_val = {}
         for ticker in tickers:
@@ -58,15 +64,17 @@ class DataQuery:
             with open(self.path + ticker + '.txt', 'rb') as f:
                 reader = csv.reader(f)
                 for row in reader:
-                    if len(row) == 7:
-                        time_arr=row[1].split(":")
-                        cur_time = time(int(time_arr[0]),int(time_arr[1]))
-                        if after_hours:
-                            t.append(Day(row[0],row[1],row[2],row[3],row[4],row[5],row[6]))
-                        else:
-                            if cur_time >= start_time and cur_time <= end_time:
-                                t.append(Day(row[0], row[1], row[2],row[3],row[4],row[5],row[6]))
-                    elif len(row) == 6:
-                        t.append(Day(row[0],"0:0",row[1],row[2],row[3],row[4],row[5])) 
+                    data_date = datetime.strptime(row[0], "%m/%d/%Y")
+                    if data_date.date() >= start_date and data_date.date() <= end_date:
+                        if len(row) == 7:
+                            time_arr=row[1].split(":")
+                            cur_time = time(int(time_arr[0]),int(time_arr[1]))
+                            if after_hours:
+                                t.append(Day(row[0],row[1],row[2],row[3],row[4],row[5],row[6]))
+                            else:
+                                if cur_time >= start_time and cur_time <= end_time:
+                                    t.append(Day(row[0], row[1], row[2],row[3],row[4],row[5],row[6]))
+                        elif len(row) == 6:
+                            t.append(Day(row[0],"0:0",row[1],row[2],row[3],row[4],row[5])) 
             ret_val[ticker] = t
         return ret_val
