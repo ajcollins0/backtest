@@ -87,7 +87,7 @@ class Results:
             gh.graph_results(self.trades)
 
         print 
-        print capital, monte_median, num_trades, win_per, ave_win, ave_loss
+        print str(capital) +","+ str(monte_median)+","+ str(num_trades)+","+ str(win_per)+","+ str(ave_win)+","+ str(ave_loss)
 
     def __monte_test(self, num_trades, win_per, ave_win, ave_loss):
         
