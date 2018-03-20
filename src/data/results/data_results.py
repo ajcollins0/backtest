@@ -26,7 +26,7 @@ class Results:
         t = Trade(entry_date, entry_price, exit_date, exit_price)
         self.trades.append(t)
 
-    def print_results(self, full=False, graph=False, monte=True):
+    def print_results(self, full=False, graph=False, monte=True, m_size=10000):
 
         capital = 10000
         
@@ -81,7 +81,7 @@ class Results:
         print "Number of loses:", l_count
 
         if monte:
-            monte_median = self.__monte_test(num_trades, win_per, ave_win, ave_loss)
+            monte_median = self.__monte_test(num_trades, win_per, ave_win, ave_loss, monte_size=m_size)
 
         if graph:
             gh.graph_results(self.trades)
@@ -89,10 +89,10 @@ class Results:
         print 
         print str(capital) +","+ str(monte_median)+","+ str(num_trades)+","+ str(win_per)+","+ str(ave_win)+","+ str(ave_loss)
 
-    def __monte_test(self, num_trades, win_per, ave_win, ave_loss):
+    def __monte_test(self, num_trades, win_per, ave_win, ave_loss, monte_size):
         
         monte_results = np.array([])
-        numTests = 10000
+        numTests = monte_size
         startingCapital = 10000.0
 
         for t in range(numTests):
