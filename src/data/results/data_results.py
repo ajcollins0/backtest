@@ -21,6 +21,11 @@ class Results:
     def __init__(self):
         self.trades = []
         self.num_trades = None
+        self.win_per = None
+        self.ave_win = None
+        self.ave_loss = None
+        self.win_median = None 
+        self.lose_median = None
 
     def add_trade(self, entry_date, entry_price, exit_date, exit_price):
         t = Trade(entry_date, entry_price, exit_date, exit_price)
@@ -28,57 +33,59 @@ class Results:
 
     def print_results(self, full=False, graph=False, monte=True, m_size=10000):
 
-        capital = 10000
-        
         monte_median = 0.0
 
         w_arr = np.array([])
         l_arr = np.array([])
-
-        w_count = 0
-        l_count = 0
+        all_trades = []
 
         for i in self.trades:
-            if i.exit_price > i.entry_price:
-                w_count += 1
-                trade_res = (i.exit_price - i.entry_price) / i.entry_price
-                capital = capital + capital * trade_res
-                w_arr = np.append(w_arr, trade_res)
+            trade_return = (i.exit_price - i.entry_price) / i.entry_price
+            all_trades.append(trade_return)
+            if trade_return > 0:
+                w_arr = np.append(w_arr, trade_return)
             else:
-                trade_res = (i.entry_price - i.exit_price) / i.entry_price
-                capital = capital - capital * trade_res
-                l_arr = np.append(l_arr, trade_res)
-                l_count += 1
+                l_arr = np.append(l_arr, trade_return)
 
-        num_trades = len(self.trades)
-        win_per = float(w_count)/float(len(self.trades))
-        ave_win = w_arr.mean()
-        ave_loss = l_arr.mean()
+        self.num_trades = len(self.trades)
+        self.win_per = float(len(w_arr))/float(len(self.trades))
+        self.ave_win = w_arr.mean()
+        self.ave_loss = l_arr.mean()
+        self.win_median = np.median(w_arr)
+        self.lose_median = np.median(l_arr)
 
-        print "Number of trades:", num_trades
-        print "Win Percentage:", win_per
-        print "Finishing Capital:", capital
+        print "Number of trades:", self.num_trades
+        print "Win Percentage:", self.win_per
 
         print
-        print "Mean Win", ave_win
-        print "Mean Loss", ave_loss
+        print "Mean Win", self.ave_win
+        print "Mean Loss", self.ave_loss
         print 
-        print "Median Win", np.median(w_arr)
-        print "Median Loss", np.median(l_arr)
+        print "Median Win", self.win_median
+        print "Median Loss", self.lose_median
         print 
         print "Max Win", np.amax(w_arr)
-        print "Max Loss", np.amax(l_arr)
+        print "Max Loss", np.amin(l_arr)
         
         if full:
             print 
             print "Min Win", np.amin(w_arr)
-            print "Min Loss", np.amin(l_arr)
+            print "Min Loss", np.amax(l_arr)
         print 
         print "Standard Deviation of Wins", np.std(w_arr, ddof=1)
         print "Standard Deviation of Loses", np.std(l_arr, ddof=1)
         print
-        print "Number of wins:", w_count
-        print "Number of loses:", l_count
+        print "Number of wins:", len(w_arr)
+        print "Number of loses:", len(l_arr)
+
+        c_ret = 1
+        for i in all_trades:
+            n = 1+i
+            c_ret = c_ret * n
+
+        c_ret=c_ret-1
+
+        print "Compouned Return", c_ret
 
         if monte:
             monte_median = self.__monte_test(num_trades, win_per, ave_win, ave_loss, monte_size=m_size)
@@ -87,7 +94,7 @@ class Results:
             gh.graph_results(self.trades)
 
         print 
-        print str(capital) +","+ str(monte_median)+","+ str(num_trades)+","+ str(win_per)+","+ str(ave_win)+","+ str(ave_loss)
+        print str(monte_median)+","+ str(self.num_trades)+","+ str(self.win_per)+","+ str(self.ave_win)+","+ str(self.ave_loss)
 
     def __monte_test(self, num_trades, win_per, ave_win, ave_loss, monte_size):
         
